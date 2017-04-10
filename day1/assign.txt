@@ -1,0 +1,17 @@
+wap block to find or to list only even num from range of 1-20 using all 3 loops;
+
+Practice 4:  
+
+Write a PL/SQL block that accepts values of two non-zero integer numbers from user. The block performs the following operation 
+( first_number/second_number + second_number). The result of the operation should be stored in a PL/SQL variable and also displayed on the screen.
+
+declare
+a number:=&num1;
+b number:=&num2;
+result number;
+begin
+result:=(a/b+b);
+dbms_output.put_line(result);
+end;
+
+

@@ -1,0 +1,139 @@
+
+PACKAGE
+---------------
+DECLARATION
+--------------
+create or replace package emp_pack as
+	g_var number;
+	procedure getEmpInfo(p_empno emp.empno%type);
+	function getSal(p_empno emp.empno%type) return number;
+end;
+---------
+DEFINATION
+---------------
+create or replace package body emp_pack as
+
+	procedure pri_proc as				-- internal procedure which is not declared in package
+		pri_var number:=11;
+	begin
+		dbms_output.put_line('into pri proc');
+	end;
+	
+
+	procedure getEmpInfo(p_empno emp.empno%type) as
+		vename emp.ename%type;
+	begin
+		pri_proc;
+		select ename into vename from emp where empno=p_empno;
+		dbms_output.put_line('from getEmpInfo='||vename);
+	exception
+		when no_data_found then
+		dbms_output.put_line('invalid empno');
+	end;
+
+	function getSal(p_empno emp.empno%type) return number as
+		vsal emp.sal%type;
+	begin
+		select sal into vsal from emp where empno=p_empno;
+		dbms_output.put_line('from getSal ='||vsal);
+		return vsal;
+	exception
+		when no_data_found then
+		dbms_output.put_line('invalid empno');
+	end;
+
+
+begin
+	dbms_output.put_line('INITIALIZATION');
+	g_var:=1;
+end;
+--------------
+EXECUTION
+---------------
+>>>>>>
+ execute emp_pack.getEmpInfo(7839);
+
+select  emp_pack.getSal(7839) from dual;
+
+
+
+
+CALLING OF VARIABLE
+----------------------------
+declare
+	
+begin
+	dbms_output.put_line('private var'||emp_pack.pri_var);
+end;
+>>wil give error coz its private n not declared in package
+
+CALLING OF VARIABLE
+
+declare
+	
+begin
+		dbms_output.put_line('global var ='||emp_pack.g_var);   -- will show value 1 initially then will give 20 as value
+		emp_pack.g_var:=20;
+end;
+>>wil execute
+
+
+FUNCTION OVERLOADING
+-----------------------------
+create or replace package OPR as
+	function add(var1 number,var2 number) return number;
+	function add(var1 number,var2 number,var3 number) return number;
+end;
+
+create or replace package body OPR as
+	function add(var1 number,var2 number) return number as
+		result number;
+	begin
+		result:=var1+var2;
+		dbms_output.put_line('add with 2 parmeter='||result);
+		return result;
+	end;
+
+	function add(var1 number,var2 number,var3 number) return number as
+	result number;
+	begin
+		result:=var1+var2+var3;
+		dbms_output.put_line('add with 3 parmeter='||result);
+		return result;
+	end;
+end;
+
+--------------------------------------------
+CALLING FUNCTION OVERLOADING EX
+--------------------------------------------
+declare
+result number;
+begin
+		result:=opr.add(2,3);
+		dbms_output.put_line('result='||result);
+		result:=opr.add(2,3,4);
+		dbms_output.put_line('result='||result);
+end;
+
+
+--------------------------------------------------------------------
+SYSTEM DATA ABOUT PROCEDURES/FUNCTIONS/PACKAGES
+--------------------------------------------------------------------
+select * from user_source where name='GET_SAL';
+	      user_object
+	     user_indexes
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

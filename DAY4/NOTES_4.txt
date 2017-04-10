@@ -1,0 +1,197 @@
+create or replace procedure display_message as
+
+begin
+	dbms_output.put_line('hello all');
+end;
+
+cmd>>>>>execute display_message;
+or
+cmd>>>>>begin
+	display_message;
+	end;
+	
+create or replace procedure display_message as
+	vsal emp.sal%type;
+begin
+	select sal into vsal from emp where empno=7;
+	dbms_output.put_line('salary='||vsal);
+exception
+	when no_data_found then
+	dbms_output.put_line('empno not found');
+end;
+
+---------------------------------------------------------
+create or replace procedure get_salinfo as
+	vsal emp.sal%type;
+begin
+	select sal into vsal from emp where empno=7839;
+	dbms_output.put_line('salary='||vsal);
+	if vsal > 20000 then
+		dbms_output.put_line('salary more than 20000');
+	else
+		dbms_output.put_line('salary less than 20000');
+	end if;
+exception
+	when no_data_found then
+	dbms_output.put_line('empno not found');
+end;
+
+execute get_salinfo;
+----------------------------------------------------------
+PARAMETER
+
+create or replace procedure get_salinfo(p_empno number) as
+	vsal emp.sal%type;
+begin
+	select sal into vsal from emp where empno=p_empno;
+	dbms_output.put_line('salary='||vsal);
+	if vsal > 20000 then
+		dbms_output.put_line('salary more than 20000');
+	else
+		dbms_output.put_line('salary less than 20000');
+	end if;
+exception
+	when no_data_found then
+	dbms_output.put_line('empno not found');
+end;
+
+cmd>>>>>execute get_salinfo(7839);
+or
+cmd>>>>>declare
+	vno emp.empno%type:=7839;
+	begin
+	get_salinfo(vno);
+	end;
+----------------------------------------------------------------------------------------
+	CURSOR
+
+is it necessory to use parametrized cursor?
+
+create or replace procedure dept_emp(p_deptno number) as
+	vsal emp.sal%type;
+	cursor ck is select * from emp where deptno=p_deptno;
+	vk ck%rowtype;
+	empx exception;
+begin
+	
+	open ck;
+	
+		loop
+			fetch ck into vk;
+			if ck%rowcount=0 then
+				raise empx;
+			end if;
+			dbms_output.put_line('name='||vk.ename||'   '||'sal='||vk.sal);
+			exit when ck%notfound;
+		end loop;
+		
+	close ck;
+	
+exception
+	when empx then
+	dbms_output.put_line('emp not found');
+end;
+
+execute dept_emp(10);
+
+----------------------------------------------------------------------------
+COLLOR procedure ( parametr1,parameter2 out number)
+
+create or replace procedure get_salinfo(p_empno number,p_sal out number) as
+	p_sal emp.sal%type;
+begin
+	select sal into p_sal from emp where empno=p_empno;
+	dbms_output.put_line('salary='||p_sal);
+exception
+	when no_data_found then
+	dbms_output.put_line('empno not found');
+end;
+
+collor:
+
+declare
+	var_sal emp.sal%type;
+begin
+	get_salinfo(7788,var_sal);
+	dbms_output.put_line('sal='||var_sal);
+------------------------------------------------------------------------
+COLLOR procedure (parameter, parameter out,parameter in out)
+
+
+
+
+
+------------------------------------------------------------------------
+FUNCTION
+
+create or replace function get_salfun(p_empno number) return number as
+	vsal emp.sal%type;
+begin
+	select sal into vsal from emp where empno=p_empno;
+	dbms_output.put_line('sal='||vsal);
+	
+	return vsal;
+exception
+	when no_data_found then
+	dbms_output.put_line('emp not available');
+end;
+
+declare
+var_sal emp.sal%type;
+begin
+var_sal:=get_salfun(7788);
+dbms_output.put_line('collor value returning'||var_sal);
+end;
+
+------------------------------------------------------------------------
+FUNCTION IN PROCEDURE
+
+
+create or replace procedure get_salinfo_proc(p_empno number) as
+	vsal emp.sal%type;
+begin
+	vsal:=get_salfun(p_empno);   --function used here to retrive data
+	if vsal>10000 then
+		update emp set sal=sal+1000 where empno=p_empno;
+	else
+		update emp set sal=sal+2000 where empno=p_empno;
+	end if;
+exception
+	when no_data_found then
+	dbms_output.put_line('empno not found');
+end;
+
+
+ execute get_salinfo_proc(7839);
+
+-----------------------
+WITHOUT VARIABLE
+
+create or replace procedure get_salinfo_proc(p_empno number) as
+	
+begin
+	
+	if get_salfun(p_empno)>10000 then
+		update emp set sal=sal+1000 where empno=p_empno;
+	else
+		update emp set sal=sal+2000 where empno=p_empno;
+	end if;
+exception
+	when no_data_found then
+	dbms_output.put_line('empno not found');
+end;
+--------------------------------------------------------------
+WITHOUT BOOLEAN TYPE
+create or replace procedure get_salinfo_proc(p_empno number) RETURN BOOLEAN as
+if 
+
+
+
+
+-----------------------------------------------------------
+BIND VARIABLE
+variable g_sal number;
+
+execute procedure(7788,:g_sal)
+
+print g_sal;

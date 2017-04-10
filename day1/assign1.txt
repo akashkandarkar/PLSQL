@@ -1,0 +1,65 @@
+wap block to find or to list only even num from range of 1-20 using all 3 loops;
+
+Practice 5:
+
+Declare two SQL* plus variables named MAX_SALARY and MIN_SALARY that are of data type NUMBER.
+Write a PL/SQL block that accepts department_id value from a user, selects the maximum salary and minimum salary paid in the department, from the EMPLOYEES table and stores the corresponding values in MAX_SALARY and MIN_SALARY respectively. 
+Use appropriate SQL * plus command to see the modified values of MAX_SALARY and MIN_SALARY
+	
+declare
+
+	max_salary number;
+	min_salary number;
+begin
+	select max(sal) ,min(sal) into max_salary, min_salary from emp;
+	dbms_output.put_line('max salary  '||max_salary||'  min salary  '||min_salary);
+end;
+
+
+Practice 6:
+
+Write a PL/SQL block that accepts job_id value from a user, calculates the average salary paid for that job. The code should display the job and the average salary for that job.
+
+declare
+
+begin
+
+end;
+
+Practice 8:
+
+Write a PL/SQL block that accepts an integer value between 1 and 12 from a user and displays the name of the corresponding month. If the number input is not in the range +1 to +12 then the block should display the message “Invalid Month” on the screen
+
+declare
+dim varchar2(20);
+a number:=&num1;
+begin
+	if a>0 and a<13 then
+		SELECT TO_CHAR(TO_DATE(a, 'MM'), 'MONTH') into dim FROM DUAL;
+		dbms_output.put_line(dim);
+	else
+		dbms_output.put_line('wrong entry');
+	end if;
+end;
+/
+
+
+Practice 9: 
+Write a PL/SQL block that accepts a positive integer number from a user and displays its factorial on the screen
+
+delcare
+	a number:=&num1;
+	f number:=0;
+	fac number:=0;
+
+begin
+	while(a>0)
+	loop
+	fac=f*a;
+	
+	a=a-1;
+	end loop;
+	
+end;
+/
+

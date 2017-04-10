@@ -1,0 +1,346 @@
+
+Subprograms (Procedures and Functions)
+
+Practice 1
+•Create a procedure called USER_QUERY_EMP that accepts three parameters. Parameter p_myeno is of IN parameter mode which provides the employee_id value. The other two parameters p_myjob and p_mysal are of OUT mode. The procedure retrieves the salary and job_id of an employee with the provided employee_id and assigns those to the two OUT parameters respectively. The procedure should handle the error if the employee_id does not exist in the EMPLOYEES table by displaying an appropriate message. Use bind variables for the two OUT Parameters.
+•Compile the code, invoke the procedure, and display the salary and job title for employee number 200. Do the same for employee number 120.
+
+>>
+create or replace procedure USER_QUERY_EMP (p_myeno emp.empno%type,p_myjob out emp.job%type,p_mysal out emp.empno%type) as
+	ct number:=0;
+begin
+	select count(*) into ct  from emp where empno=p_myeno;
+	if ct=0 then
+		raise no_data_found;
+	else
+	select job,sal into p_myjob,p_mysal from emp where empno=p_myeno;
+	end if;
+exception
+	when no_data_found then
+	dbms_output.put_line('empno not available');
+end;
+
+collor:
+declare
+	vsal emp.sal%type;
+	vjob emp.job%type;
+begin
+	USER_QUERY_EMP (1234,vjob,vsal);
+	if vsal is null then
+		dbms_output.put_line('no data will be fetched');
+	else
+		dbms_output.put_line('job id='||vjob);
+		dbms_output.put_line('salary='||vsal);	
+	end if;
+end;
+
+_*_*__**_*_*_*_*_*_*_*_*_*__*_*_**_*_*_**__*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_**_*_*_**__*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*
+Practice 2
+•Create a function named USER_ANNUAL_COMP that has three parameters p_eno, p_sal and p_comm for passing on the values of an employee_id, the current salary and commission of the employee respectively. The function calculates and returns the annual compensation of the employee by using the following formula.
+     annual_compensation =  (p_sal+p_comm)*12
+If the salary or commission value is NULL then zero should be substituted for it. 
+•Give a call to USER_ANNUAL_COMP from a SELECT statement, against the EMPLOYEES table.
+
+>>
+create or replace function USER_ANNUAL_COMP(p_eno emp.empno%type) return number as
+	anucomp number;
+	p_sal emp.sal%type;
+	p_comm emp.comm%type;
+begin
+	select nvl(sal,0), nvl(comm,0) into p_sal,p_comm from emp where empno=p_eno;
+	anucomp :=(p_sal+p_comm)*12;
+	return anucomp;
+end;
+
+ans:
+
+select USER_ANNUAL_COMP(7839)  from dual;
+
+or
+
+declare
+	acomm number;
+begin
+	select USER_ANNUAL_COMP(7839) into acomm from dual;
+	dbms_output.put_line('annual commision is '||acomm);
+end;
+
+
+_*_*__**_*_*_*_*_*_*_*_*_*__*_*_**_*_*_**__*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_**_*_*_**__*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*_*
+Practice 3
+•Create a function named USER_VALID_DEPTNO that has a single parameter p_dno to accept a department number and returns a BOOLEAN value. The function returns TRUE if the department number exists in the DEPARTMENTS table else it returns FALSE.
+•Create a procedure named SHOW_STRENGTH that accepts department number in a single parameter p_deptno from user. The procedure gives a call to USER_VALID_DEPTNO. If the function returns TRUE then the procedure finds out how many employees are there in the department from the EMPLOYEES table and displays the same on the screen. If the function returns FALSE then the procedure displays an appropriate error message.
+•Give call to SHOW_STRENGTH by passing on department number 10. Do the same for department number 76
+
+create or replace function USER_VALID_DEPTNO( p_dno emp.deptno%type) return boolean as
+	ct number;
+begin
+	select count(*) into ct from dept where deptno=p_dno;
+	if ct is not null then
+		return true;
+	else
+		return false;
+	end if;
+end;
+
+ create or replace procedure SHOW_STRENGTH ( dptno emp.deptno%type)as
+
+ct number;
+begin
+	
+	if USER_VALID_DEPTNO(dptno) then
+		select count(*) into ct from emp where deptno=dptno;
+		dbms_output.put_line('no of emp in dept'||dptno||'  are  '||ct);
+	else
+		dbms_output.put_line('invalid dept no');
+	end if;
+end;
+
+
+begin
+ show_strength(10);
+end;
+
+
+
+
+Practice 4
+•Create a procedure named SHOW_RECORDS that accepts a single parameter p_join_date. The procedure determines and displays on the screen, the details of the employees who have joined after p_join_date, in the following format. 
+Employees Joined after ddth, Month yyyy
+
+EMPLOYEE FIRST NAME		JOB		SALARY	DEPARTMENT 
+___________________________________________________________________
+
+XXXXXXXX			XXXXX		99,999		  99
+XXXXXXXX			XXXXX		99,999		  99
+
+12-jan-83
+
+create or replace procedure show_records(p_join_date date) as
+	
+	cursor ck is select * from emp where  p_join_date > hiredate;
+	vemp ck%rowtype;
+begin	
+	dbms_output.put_line('employee joined after   ' ||to_char(p_join_date,'ddth month yyyy'));
+	dbms_output.put_line('name'||'    '||'job'||'    '||'        sal'||'     '||'deptno');
+	open ck;
+	loop
+		fetch ck into vemp;
+		exit when ck%notfound;
+		dbms_output.put_line(vemp.ename||'    '||vemp.job||'    '||vemp.sal||'    '||vemp.deptno);
+	end loop;
+	close ck;
+end;
+
+begin
+  show_records('12-jan-83');
+end;
+
+The procedure should display appropriate message if there is no employee who joined after p_join_date.
+•Give a call to SHOW_RECORDS from an anonymous PL/SQL block 
+
+
+Practice 5
+•Create a procedure named ADD_EMPLOYEE to hire an employee. Parameters to the procedure are job_id, manager_id, hire_date, salary, commission and department_id. Validate the following:
+
+a. Employee number is not taken as a parameter but is auto generated by using a SEQUENCE. 
+b. Job is either ‘Programmer’ or ‘Accountant’ or ‘Public Accountant’. The input value can be entered in any case.
+c. Manager is an existing employee.
+d. Hiredate is less than system date.
+e. Salary must be greater than 800
+f. Commission is not null if the job is ‘Accountant’. For any other job, commission is null.
+g. Department_id must exist in the DEPARTMENTS table.
+Insert the record if the above validations are met and display a message ‘1 row inserted’. If the row is not inserted generate an exception and handle it by displaying an appropriate message. 
+•Give a call to ADD_EMPLOYEE through an anonymous PL/SQL block
+
+
+Practice 6
+Create a stored procedure Gen_Bill which will take custid, Bill_amt and Bill_date as argument to insert a record in the Bill_Details table on the basis of the following rules:
+a)A unique Bill_id should be generated and inserted into table
+b)Check referential integrity for Custid
+c)Bill_amt should not exceed Rs.12000
+d)Bill date should be today’s date.    On successful insertion of the record display a success message. Handle all possible exceptions if any of the rules is violated	
+
+Note: Refer Operator schema
+
+create or replace procedure gen_bill(gcustid bill_details.cust_id%type,gbill_amt  bill_details.bill_amount%type,gbill_date bill_details.bill_date%type) as
+	
+	ct number;
+	no_cust_available exception;
+	amt_exceed exception;
+	invalid_date exception;
+	sysdt date;
+	f number;
+	gbill_no varchar2(10);
+	 maxbno number;
+	
+begin
+	select count(*) into ct from customers where cust_id=gcustid;
+	if (ct = 0) then
+		raise no_cust_available;	
+	end if;
+
+	if gbill_amt > 9999 then
+		raise amt_exceed;
+	end if;
+	
+	select sysdate into sysdt from dual;	
+	dbms_output.put_line(sysdt);
+	if trunc(sysdt)=trunc(to_date(gbill_date,'dd-mon-rr')) then
+		f:=0;
+	else
+		f:=1;
+	end if;
+	
+	if f = 1 then
+		raise invalid_date;
+	end if;
+
+	
+	select substr(max(bill_no),7) into maxbno from bill_details where cust_id=1111;
+	maxbno:=maxbno +1;
+	gbill_no:=gcustid||'-B'||maxbno;
+
+
+
+
+	insert into Bill_Details values(gbill_no,gcustid,gbill_amt,gbill_date);
+	dbms_output.put_line('success');
+exception
+	when no_cust_available then
+		dbms_output.put_line('customer id not available');
+	when amt_exceed then
+		dbms_output.put_line('entered amount is exceeding');
+	when invalid_date then
+		dbms_output.put_line('please enter todays date');
+end;
+
+
+execute gen_bill(1111,1000,'10-apr-17');
+=-----------------------------------
+
+
+
+declare 
+sysdt date;
+
+begin
+	select sysdate into sysdt from dual;	
+	dbms_output.put_line(sysdt);
+	if trunc(sysdt)=trunc(to_date('10-apr-17','dd-mon-rr')) then
+		f:=0;
+	else
+		f:=1;
+	end if;
+	
+end;
+
+
+select substr(max(bill_no),7) into maxbno from bill_details where cust_id=1111;
+==-=--------------------------------------------------
+
+
+
+
+
+Practice 7
+Create a stored procedure create_author_details which takes pri_authr_name, country, email_id as parameters to insert one record in scholars table. 		
+  Before inserting it checks the following,
+i.Write logic to generate next pri_authr_id in same series like 'A007' after 'A006' 
+ii.Check no constraints should be violated
+iii.If no constraints are violated insert the record in to scholars table, otherwise raise and handle the exception.
+Note: scholar_domain_publication schema
+
+>>>>>>>>>
+/*create sequence seq
+minvalue 0
+start with 6
+increment by 1;
+*/	
+
+create or replace procedure create_author_details (pri_authr_name varchar2,country varchar2,email varchar2) as
+
+	null_name exception;
+	null_country exception;
+	invalid_email exception;
+	a number;
+	pri_authr_id varchar2(10);
+begin
+	if pri_authr_name is null then
+		raise null_name;
+	end if;
+	
+	if country is null then
+		raise null_country;
+	end if;
+
+	if email  not like '%@%.com' then
+		raise invalid_email;
+	end if;
+	
+	select substr(max(pri_authr_id),2) into a from scholars;
+	a:=a+1 ;
+	if a < 10 then
+		pri_authr_id:='A00'||to_char(a);
+	elsif a > 10 and a <100 then
+		pri_authr_id:='A0'||to_char(a);
+	elsif a > 99 then
+		pri_authr_id:='A'||to_char(a);
+	end if; 
+	
+	insert into scholars values(PRI_AUTHR_ID,PRI_AUTHR_NAME,COUNTRY,EMAIL);                       
+
+exception
+when null_name then
+	dbms_output.put_line('enter valid name');
+when  null_country then
+	dbms_output.put_line('enter valid country name');
+when invalid_email then
+	dbms_output.put_line('enter valid email');
+end;
+
+
+			
+
+
+
+Practice 8
+Write a procedure prGenerateReport which accepts movie_id as parameter and should display the summarized report of total ticket sold for that particular movie in each theatre.
+If the movieID is not valid raise and handle the exception with message “Invalid movie id”.
+If the movieID is valid, it should display the output in the following format:   	 	       	
+	
+	Movie Name:___________	
+            Language: ______________
+            Duration : ________________	
+
+Sr Id			Threatre_id			Total_No_Tickets_Sold  	
+	    1.				……..				…..
+	    2. 				…….				……
+
+Note: use cinema_schema schema
+
+Practice 9
+
+Write a Stored procedure GET_DETAILS which accepts two parameters as mentioned below:
+-	P_BUS_NO	       :  parameter to accept bus number from calling block.
+-	P_DETAILS  : a record type variable to hold bus_details i.e., BUS_TYPE and MANUFACTURER
+
+Procedure validates the bus_no. If bus_no is valid the procedure stores bus details into P_DETAILS.
+If the bus_no is not valid the procedure throws an exception with error message “invalid bus number”
+
+Call procedure GET_DETAILS from an anonymous block and display bus details.
+
+Note:Refer bus schedule schema
+
+BUS_NO                                    NOT NULL VARCHAR2(15)
+BUS_TYPE                                  NOT NULL VARCHAR2(20)
+MANUFACTURER                                       VARCHAR2(20)
+MANUFACTURING_DT                                   DATE
+CONTRACTOR_ID                                      VARCHAR2(5)
+
+ 
+
+begin
+execute get_details('MH-12-GH-123');
+end;
+

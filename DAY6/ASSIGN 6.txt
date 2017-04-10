@@ -1,0 +1,151 @@
+Objects 
+Practice 1
+•Create a user defined data type named “MARKS_TYPE” having the following subfields
+
+Column		Data type and size
+Subject		VARCHAR 2 (25)
+midTermMarks	NUMBER (3)
+annualMarks	NUMBER(3)
+
+•Create an object table with name “MYMARKS” having a single column of type MARKS_TYPE.
+•Insert any 3 records in the table with relevant data
+•Fire an appropriate SELECT command to get midTermMarks and annualMarks for all records for the given subject
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+create or replace type  mark_type as object
+	(Subject	VARCHAR2(25),midTermMarks NUMBER (3),annualMarks	NUMBER(3));
+
+create table mymarks (marks mark_type);
+
+ insert into mymarks values(mark_type('maths',100,100));
+ insert into mymarks values(mark_type('maths_3',79,80));
+ insert into mymarks values(mark_type('sanskrit',90,99));
+
+select m.marks.annualmarks from mymarks m where m.marks.subject='maths';
+
+\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+Practice 2
+
+•	Create table “students” having the following design
+
+Column		Data type and size	Constraint
+
+studentName	VARCHAR 2 (25)	
+rollNo		NUMBER (3)	Primary Key
+Score		MARKS_TYPE	
+
+•	Insert any 3 relevant records in the table.
+•	Fire an appropriate SELECT query to get the score of a student with the given rollNO
+•	Fire an appropriate command to increase the annualMarks of the student with given rollNo by five marks
+
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+create or replace type  mark_type as object
+	(Subject	VARCHAR2(25),midTermMarks NUMBER (3),annualMarks	NUMBER(3)); 
+
+create table students (studentName VARCHAR2(25),rollNo  NUMBER(3) Primary Key,score mark_type);
+
+
+ insert into students values('akash',1,mark_type('maths',100,100));
+ insert into students values('kash',2,mark_type('maths',100,100));
+ insert into students values('zakash',3,mark_type('maths',100,100));
+
+select s.score from students s where rollno=1;
+
+update students s set s.score.annualmarks=(s.score.annualmarks+5) where rollno=1;
+
+\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+-------------------------------(3)-------------------------------------------------
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+create or replace type icecream_type as object(flovorNo NUMBER(2),Fname VARCHAR(10),Cost NUMBER(3),Hastopping CHAR(1));
+
+create table menu (MenuNo	NUMBER(2),mainCourse VARCHAR2(15),Desert icecream_type,Colddrink CHAR(6));
+
+ insert into menu values(1,'jeavan',icecream_type(1,'peru',50,'Y'),'7up');
+
+ insert into menu values(2,'nasta',icecream_type(2,'papai',60,'Y'),'fruti');
+
+ insert into menu values(3,'faral',icecream_type(3,'chiku',70,'Y'),'coke');
+
+select m.Desert.Fname, m.Desert.cost from menu m where m.Desert.flovorNo=2;
+
+update menu m set m.Desert.cost=100 where menuno=1;
+
+update menu m set maincourse='pangat' where menuno=2;
+
+-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+Collections
+
+
+Practice 1
+
+
+\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+Practice 2
+
+create type CUST_TAB as object
+(Cust_id Cust_NamePlan_Name
+
+___________________________________________________________________
+\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+Practice 3
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+Practice 4
+\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Practice 5
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+A.	create an object named paper_obj with following attributes:
+paperid
+     paperName
+     publishDate
+
+B.	Create suitable collection type paper_details of paper_obj type.
+C.	Create a table Author_Tab as follows :
+
+Columname                            	Constraint  	Datatype
+Authorid                        	Primary Key            	  Number(10)
+AuthorName                      	 	             Varchar2(20)
+Papers	 	                                paper_details
+		                             
+D.	 Insert 2 rows in the above table 
+Atleast 2 paper_obj entries per author.
+
+Practice 6 
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Create an object type to maintain the history of salary hike given to employees named INCREMENT_TYPE having the following design:
+
+Incr_ID	NUMBER (3)
+Incr_Date	DATE
+Incr_Amt	NUMBER (7)
+
+
+•	Create a table named EMP_DETAIL with one of the column having the data type as SKILLS_TYPE and another one INCREMENT_TYPE. 
+
+Emp_No	NUMBER (4)
+Emp_Name	CHAR (30)
+Emp_Skills	SKILLS_TYPE
+Emp_Incr	INCREMENT_TYPE
+
+
+•	Insert few records in table EMP_DETAIL. 
+
+•	Write a procedure that will accept Emp_No as a parameter and display the data from EMP_DETAIL as follows:
+
+Employee No:   XXXXXXX		Employee Name: XXXXXXXXXX
+___________________________________________________
+Skill Set
+	
+Skill ID: XXX		Skill Name: XXXXX		Rating: XX
+___________________________________________________
+Increment
+
+Increment ID: XXXX	Increment Date: XXXXXX	 Amount: XXXXXX
+      
+         The procedure

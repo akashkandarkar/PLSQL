@@ -1,0 +1,54 @@
+Practice 1	
+•Write a PL/SQL block that takes a department number from a user and increases the salary of all the employees belonging to the department by 10%. The block should display on the screen how many records are updated.
+
+
+
+
+Practice 2
+
+•	Write a PL/SQL block to display the employee first name, salary and JOB_TITLE for the first five employees recorded in the “employees” table by making use of :
+•	Simple for loop with “EXIT WHEN” condition
+•	The “WHILE” condition
+•	Cursor FOR LOOP 
+
+Practice 3
+
+•	Write a PL/SQL block that displays names and salaries of all “Programmer” recorded in the employees table by making use of a cursor.
+
+Practice 4
+
+•	Write a PL/SQL block that accepts a value of a job_id from user and displays the full names, department numbers and salaries of the employees from the “employees” table having that job. The block makes use of a parameterized cursor. The user input is passed on to the cursor as a parameter. 
+   	
+Practice 5
+
+•	Write a PL/SQL block that updates the salaries of the employees as per the following rules. 
+•	If the job is SH_CLERKand department_id is 10 then increase the salary by 20%
+•	If the job is ST_MAN and department_id is 20 then increase the salary by 5%
+•	For all the other cases increase the salary by 10%
+The block makes use of a cursor for performing the updates and ensures that the appropriate locks are taken on the data retrieved by the cursor, as the data is to be updated. 
+
+
+
+Practice 6
+
+•	Write a PL/SQL block that retrieves information from the “department” and “employees” table and displays it in the following format
+
+Department ID :10		Department Name : XXXX
+________________________________________________________
+EMPLOYEE NUMBER 	 EMPLOYEE FULL NAME	SALARY  	JOB
+
+XXXXXX		XXXXXX			XXXX		XXXXX
+XXXXXX		XXXXXX			XXXX		XXXXX
+.........
+
+Department ID : 20		Department Name : XXXX
+________________________________________________________
+EMPLOYEE NUMBER 	 EMPLOYEE FULL NAME	SALARY  	JOB
+
+XXXXXX		XXXXXX			XXXX		XXXXX
+XXXXXX		XXXXXX			XXXX		XXXXX
+.........
+
+    ......and so on for all the departments recorded in the “department” table.
+(Hint : Make use of two cursors –one to retrieve department details and another a parameterized cursor to retrieve employee details. In a loop, use a cursor to retrieve the department and the department name from the DEPARTMENT table, pass the department_id second  cursor to retrieve the required column values from the “EMPLOYEES” table, for those employees who work in that department.)
+

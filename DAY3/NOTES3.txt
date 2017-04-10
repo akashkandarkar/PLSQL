@@ -1,0 +1,128 @@
+EXCEPTION
+1)no_data_found
+2)zero_divide
+3)too_many_rows
+4)value_error
+5)cursor_already_open
+6)invalid_cursor
+7)others
+
+
+declare 
+	v_sal emp.sal%type;
+	var number(3);
+	z number;
+begin
+	var:=1000;
+	z:=10/0;
+	select sal into v_sal from emp where empno=1;
+	dbms_output.put_line('sal='||v_sal);
+exception
+	when no_data_found then
+	dbms_output.put_line('emp is not available');
+	
+	when zero_divide then
+	dbms_output.put_line('cant divide by zero');
+	when others then
+	dbms_output.put_line('other exception');
+end;
+
+--------------------------------------------------------------------------------------
+type of exception
+
+declare 
+	cursor c_emp is select * from emp;
+begin
+	close c_emp;
+exception
+	when invalid_cursor then
+	dbms_output.put_line('invalid cursor opening');
+end;
+---------------------------------------------------------------------------------
+
+TO CATCH EXCEPTION FROM DECLARE SECTION
+
+declare
+begin
+	declare
+	//VARIABLE WITH EXCEPTION//
+	begin
+	//CODE//
+	exception
+	//INNER BLOCK EXCEPTION//
+	//SWITCH TO OUTER BLOCK//
+	end;
+exception
+//VARIABLE EXCEPTION CAUGHT//
+end;
+
+--------------------------------------------------------------------------------
+declare 
+	childfound exception;
+	pragma exception_init(childfound,-02292);
+begin
+	delete dept where deptno=10;
+	dbms_output.put_line('dept 10 is deleted');
+exception
+	when childfound then
+	dbms_output.put_line('existing in dept no 10');
+end;
+
+--------------------------------------------------------------------------------
+
+
+TO RAISE EXCEPTION FROM BEGIN SECTION
+
+declare
+marks number;
+wrong_marks exception;
+begin
+marks:=&num1;
+	if marks>100 then
+	raise wrong_marks;
+	end if;
+dbms_output.put_line('marks='||marks);
+exception
+when wrong_marks then
+dbms_output.put_line('please enter marks below 100');
+end;
+
+
+-----------------------------------------------------------------
+CASH WITHDRAWL EXCEPTION
+id:7839 
+sal:6000 
+
+
+declare
+id number;
+amount emp.sal%type;
+debit number;
+less_sal exception;
+begin
+id:=&num1;
+debit:=&num2;
+	select sal into amount from emp where empno=id;
+	if debit>amount then
+	raise less_sal;
+	end if;
+	
+
+exception
+when less_sal then
+dbms_output.put_line('please enter amount less than '||amount);
+end;
+
+--------------------------------------------------------------------------------
+
+declare
+	var number(3);
+begin
+	var:=10000;
+	dbms_output.put_line('var='||var);
+exception
+when value_error then
+	dbms_output.put_line('showing error through exception');
+	dbms_output.put_line('error code='||SQLCODE||'message='||SQLERRM);
+end;
+---------------------------------------------------------------------------------

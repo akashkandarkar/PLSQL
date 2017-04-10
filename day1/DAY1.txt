@@ -1,0 +1,165 @@
+set serveroutput on
+set verify off
+
+declare
+i number := &num1;
+j number := &num2;
+addition number;
+begin
+addition:=i+j;
+dbms_output.put_line('addition is' || addition );
+end;
+/
+
+
+declare
+	v_name varchar2(20);
+	v_sal number;
+	v_empid NUMBER :=&eno;
+
+begin
+	select ename,sal into v_name,v_sal from emp
+	where empno=v_empid;
+	dbms_output.put_line('name=' || v_name);
+	dbms_output.put_line('salary=' || v_sal);
+
+end;
+/
+
+----------------------------------------------------------------------------------------
+RECORDS:
+----------------------------------------------------------------------------------------
+declare
+	Rec_emp employees%rowtype;
+	v_empid number :=&eno;
+
+begin
+	select * into Rec_emp from employees
+	where employee_id=v_empid;
+	dbms_output.put_line('name=' || Rec_Emp.last_name);
+	dbms_output.put_line('salary=' ||Rec_Emp.salary);
+
+end;
+/
+----------------------------------------------------------------------------------------
+
+declare
+	v_name employees.last_name%type;
+	v_sal employees.salary%type;
+	v_empid NUMBER :=&eno;
+
+begin
+	select last_name,salary into v_name,v_sal from employees
+	where employee_id=v_empid;
+	dbms_output.put_line('name=' || v_name);
+	dbms_output.put_line('salary=' || v_sal);
+
+end;
+/
+
+----------------------------------------------------------------------------------------
+IF ELSE
+
+declare 
+	a number:=&num1;
+begin
+	if(mod(a,2)=0) then
+		dbms_output.put_line(a||'is even');
+	else
+		dbms_output.put_line(a||'is odd');
+	end if;
+end;
+/
+
+MAX NUMBER
+declare 
+	a number:=&num1;
+	b number:=&num2;
+	c number:=&num3;
+begin
+	if(a>b and a>c)then
+		dbms_output.put_line(a||'is MAX');
+	elsif (b>c) then
+		dbms_output.put_line(b||'is MAX');
+	else
+		dbms_output.put_line(c||'is MAX');
+	end if;
+end;
+/
+
+
+----------------------------------------------------------------------------------------
+                                              LOOPS
+1)basic loop
+2)while loop
+3)for loop
+
+
+1)basic loop
+	
+	declare 
+		i number:=1;
+	begin
+		loop
+			
+			dbms_output.put_line(i);
+			i:=i+1;
+			exit when(i>5);
+		end loop;
+	end;
+	/
+2)while loop
+	
+	declare 
+		i number:=1;
+	begin
+		while(i<=5)
+		loop
+			
+			dbms_output.put_line(i);
+			i:=i+1;
+			
+		end loop;
+	end;
+	/
+	
+3)for loop
+
+	declare 
+		i number:=1;
+	begin
+		for i in 1 .. 5
+		loop
+			
+			dbms_output.put_line(i);
+			
+		end loop;
+	end;
+	/
+
+
+	declare 
+		i number:=1;
+	begin
+		for i in reverse 1 .. 5
+		loop
+			
+			dbms_output.put_line(i);
+			
+		end loop;
+	end;
+	/
+----------------------------------------------------------------------------------------
+                                      BIND VARIABLE
+
+>>	variable maxsal number
+>>	print maxsal
+
+	begin
+		select max(salary) into :maxsal from employees;
+		dbms_output.put_line('max sal is' || :maxsal);
+	end;
+	/
+		
+----------------------------------------------------------------------------------------	
+			NESTING OF BLOCKS
